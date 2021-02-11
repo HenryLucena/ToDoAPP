@@ -45,7 +45,8 @@ module.exports = (app) => {
             _id: new mongoose.Types.ObjectId(),
             titulo: req.body.titulo,
             descricao: req.body.descricao,
-            status: req.body.status
+            status: req.body.status,
+            data_de_criacao: new Date()
         });
         tarefa.save()
             .then(data => {
