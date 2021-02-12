@@ -3,8 +3,7 @@ const mongoose = require('mongoose')
 
 module.exports = (app) => {
     app.get('/tarefa', (req, resp) => {
-        Tarefa.find()
-            .exec()
+        Tarefa.find().exec()
             .then(data => {
                 if (data.length >= 0) {
                     console.log(data)
@@ -21,17 +20,18 @@ module.exports = (app) => {
             })
     })
 
-    app.get('/:tarefaId', (req, resp) => {
+    app.get('/tarefa/:tarefaId', (req, resp) => {
         const id = req.params.tarefaId;
 
-        Tarefa.findById(id)
-            .exec()
+        Tarefa.findById(id).exec()
             .then(data => {
-                data ? 
-                resp.status(200).json(data) : 
-                resp.status(404).json({
-                    messagem: "Tarefa não encontrada pelo ID informado"
-                })
+                if(data) {
+                    resp.status(200).json(data)
+                } else {
+                    resp.status(404).json({
+                        messagem: "Tarefa não encontrada pelo ID informado"
+                    })
+                }   
             })
             .catch(err => {
                 resp.status(500).json({
@@ -57,7 +57,7 @@ module.exports = (app) => {
             });
     })
 
-    app.delete('/:tarefaId', (req, resp) => {
+    app.delete('/tarefa/:tarefaId', (req, resp) => {
         const id = req.params.tarefaId;
 
         Tarefa.remove({ _id: id })
