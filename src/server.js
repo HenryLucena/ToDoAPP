@@ -7,12 +7,12 @@ const port = process.env.port || 3000;
 const app = express();
 
 mongoose.connect('mongodb+srv://dbUser:senha123@todo.hvlgj.mongodb.net/<dbname>?retryWrites=true&w=majority', {
-    useMongoCliente: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
 
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false}))
 app.use(cors())
 
 const tarefaController = require('./controllers/tarefa-controller');
