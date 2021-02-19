@@ -6,7 +6,7 @@ module.exports = (app) => {
 
         try {
             const buscaTarefas = await Tarefa.find({});
-            if(buscaTarefas.length >= 0) {
+            if(buscaTarefas.length > 0) {
                 resp.status(200).json(buscaTarefas)
             } else {
                 resp.status(404).json({mensagem: "Nenhum tarefa cadastrada"})
@@ -27,7 +27,7 @@ module.exports = (app) => {
                 resp.status(404).json({mensagem: "Nenhuma tarefa encontrada com este ID"})
             }
         } catch (err) {
-            resp.statu(500).json({ Error: err})
+            resp.status(500).json({ Error: err})
         }
     })
 
@@ -55,6 +55,22 @@ module.exports = (app) => {
             const deletaTarefa = await Tarefa.remove({_id: id})
 
             resp.status(200).send('Tarefa deletada com sucesso')
+        } catch (err) {
+            resp.status(500).json({Error: err})
+        }
+    })
+
+    app.put('/tarefa/:tarefaID', async (req, resp) => {
+        const atualizaTarefa = req.body.descricao
+
+        try {
+
+            const doc = await Tarefa.findOneAndUpdate(
+                {_id: req.params.id},
+                {descricao: atualizaTarefa}
+            )
+
+            resp.status(200).send(`Descricao da tarefa atualizada para ${atualizaTarefa}`)
         } catch (err) {
             resp.status(500).json({Error: err})
         }

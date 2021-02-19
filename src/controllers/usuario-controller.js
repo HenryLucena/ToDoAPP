@@ -1,34 +1,35 @@
 const User = require('../models/usuario')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { update } = require('../models/usuario');
 
 module.exports = (app) => {
     app.get('/usuario', async (req, resp) => {
 
         try {
             const buscaUsuarios = await User.find({});
-            if(buscaUsuarios.length >= 0) {
+            if (buscaUsuarios.length >= 0) {
                 resp.status(200).json(buscaUsuarios)
             } else {
-                resp.status(404).json({Mensagem: "Nenhum usuário cadastrado"})
+                resp.status(404).json({ Mensagem: "Nenhum usuário cadastrado" })
             }
         } catch {
-            resp.status(500).json({error: err})
+            resp.status(500).json({ error: err })
         }
-        
+
     })
 
     app.get('/usuario/:usuarioId', async (req, resp) => {
         const id = req.params.usuarioId;
 
         try {
-            const buscaUsuariosId = await User.findById({_id: id})
-            if(buscaUsuariosId) {
+            const buscaUsuariosId = await User.findById({ _id: id })
+            if (buscaUsuariosId) {
                 resp.status(200).json(buscaUsuariosId)
             } else {
-                resp.status(404).json({Mensagem: "Usuario não encontrado"})
+                resp.status(404).json({ Mensagem: "Usuario não encontrado" })
             }
         } catch (err) {
-            resp.status(500).json({error: err})
+            resp.status(500).json({ error: err })
         }
     })
 
@@ -44,7 +45,7 @@ module.exports = (app) => {
             const criaUsuario = await usuario.save()
             resp.status(200).send("Usuario criado com sucesso")
         } catch (err) {
-            resp.status(500).json({Error: err})
+            resp.status(500).json({ Error: err })
         }
     });
 
@@ -52,11 +53,29 @@ module.exports = (app) => {
         const id = req.params.usuarioId;
 
         try {
-            const removeUsuario = User.remove({_id: id})
+            const deletaUsuario = await User.remove({ _id: id })
+
             resp.status(200).send('Usuario deletado com sucesso')
         } catch (err) {
-            resp.status(500).json({Error: err})
+            resp.status(500).json({ Error: err })
         }
     })
 
+    app.put('/usuario/:usuarioId', async (req, resp) => {
+
+        const atualizaNome = req.body.nome
+
+        try {
+            const doc = await User.findOneAndUpdate(
+                { _id: req.params.usuarioId },
+                { nome: atualizaNome}
+            )
+
+            resp.status(200).send(`Nome atualizado para ${atualizaNome}`)
+
+        } catch (err) {
+            resp.status(500).json({Error: err})
+        }
+        
+    })
 }

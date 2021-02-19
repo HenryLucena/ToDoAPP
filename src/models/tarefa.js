@@ -17,6 +17,7 @@ const tarefaSchema = mongoose.Schema({
         required: [true, 'Status da tarefa requerido']
     },
     data_de_criacao: Date,
+    idDono: String
 })
 
 module.exports = mongoose.model('Tarefas', tarefaSchema)
