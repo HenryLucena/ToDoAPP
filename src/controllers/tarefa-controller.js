@@ -2,45 +2,36 @@ const Tarefa = require('../models/tarefa')
 const mongoose = require('mongoose')
 
 module.exports = (app) => {
-    app.get('/tarefa', (req, resp) => {
-        Tarefa.find().exec()
-            .then(data => {
-                if (data.length >= 0) {
-                    console.log(data)
-                    resp.status(200).json(data)
-                } else {
-                    resp.status(404).json({
-                        mensagem: 'Nenhuma tarefa cadastrada'
-                    })
-                }
-            })
-            .catch(err => {
-                console.log(err)
-                resp.status(500).json({ error: err })
-            })
+    app.get('/tarefa', async (req, resp) => {
+
+        try {
+            const buscaTarefas = await Tarefa.find({});
+            if(buscaTarefas.length >= 0) {
+                resp.status(200).json(buscaTarefas)
+            } else {
+                resp.status(404).json({mensagem: "Nenhum tarefa cadastrada"})
+            }
+        } catch (err) {
+            resp.status(500).json({Error: err})
+        }
     })
 
-    app.get('/tarefa/:tarefaId', (req, resp) => {
+    app.get('/tarefa/:tarefaId', async (req, resp) => {
         const id = req.params.tarefaId;
 
-        Tarefa.findById(id).exec()
-            .then(data => {
-                if(data) {
-                    resp.status(200).json(data)
-                } else {
-                    resp.status(404).json({
-                        messagem: "Tarefa não encontrada pelo ID informado"
-                    })
-                }   
-            })
-            .catch(err => {
-                resp.status(500).json({
-                    error: err
-                })
-            })
+        try {
+            const buscaTarefasId = await Tarefa.findById({_id: id})
+            if(buscaTarefasId) {
+                resp.status(200).json(buscaTarefasId)
+            } else {
+                resp.status(404).json({mensagem: "Nenhuma tarefa encontrada com este ID"})
+            }
+        } catch (err) {
+            resp.statu(500).json({ Error: err})
+        }
     })
 
-    app.post('/tarefa', (req, resp) => {
+    app.post('/tarefa', async (req, resp) => {
         const tarefa = new Tarefa({
             _id: new mongoose.Types.ObjectId(),
             titulo: req.body.titulo,
@@ -48,25 +39,24 @@ module.exports = (app) => {
             status: req.body.status,
             data_de_criacao: new Date()
         });
-        tarefa.save()
-            .then(data => {
-                resp.status(200).json(data)
-            })
-            .catch(err => {
-                resp.status(500).json({ "error": err })
-            });
+        
+        try {
+            const criaTarefa = await tarefa.save()
+            resp.status(200).send('Tarefa criada com sucesso')
+        } catch (err) {
+            resp.status(500).json({Error: err})
+        }
     })
 
-    app.delete('/tarefa/:tarefaId', (req, resp) => {
+    app.delete('/tarefa/:tarefaId', async (req, resp) => {
         const id = req.params.tarefaId;
 
-        Tarefa.remove({ _id: id })
-            .exec()
-            .then(data => {
-                resp.status(200).json(data);
-            })
-            .catch(err => {
-                resp.status(500).json({ error: err })
-            })
+        try {
+            const deletaTarefa = await Tarefa.remove({_id: id})
+
+            resp.status(200).send('Tarefa deletada com sucesso')
+        } catch (err) {
+            resp.status(500).json({Error: err})
+        }
     })
 }
