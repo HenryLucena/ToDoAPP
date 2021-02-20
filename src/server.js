@@ -17,7 +17,9 @@ app.use(cors())
 
 const tarefaController = require('./controllers/tarefa-controller');
 const usuarioController = require('./controllers/usuario-controller')
+const appController = require('./controllers/app-controller')
 
+appController(app)
 tarefaController(app)
 usuarioController(app)
 
