@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose')
-const port = process.env.port;
 
 const app = express();
 
@@ -23,4 +22,4 @@ appController(app)
 tarefaController(app)
 usuarioController(app)
 
-app.listen(port, () => console.log(`Estou rodando na porta ${port}`))
+app.listen(process.env.port || '0.0.0.0', () => console.log(`Estou rodando na porta ${port}`))
