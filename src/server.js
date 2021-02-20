@@ -22,4 +22,4 @@ appController(app)
 tarefaController(app)
 usuarioController(app)
 
-app.listen(process.env.port || '0.0.0.0', () => console.log(`Estou rodando na porta ${port}`))
+app.listen(process.env.port, () => console.log(`Estou rodando na porta ${port}`))
